@@ -6,13 +6,10 @@
     <title>Muhammed Hadhi Havath - Portfolio</title>
     <meta name="description" content="Portfolio of Muhammed Hadhi Havath - Aspiring Ethical Hacker and Developer">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
@@ -50,7 +47,6 @@
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-emerald-500/30">
 
-    <!-- Navigation -->
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6 bg-transparent">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <div class="text-2xl font-bold tracking-tighter text-emerald-400 flex items-center gap-2">
@@ -58,40 +54,33 @@
                 <span>MHH<span class="text-slate-100">.dev</span></span>
             </div>
             
-            <!-- Desktop Nav -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="#about" class="hover:text-emerald-400 transition-colors">About</a>
                 <a href="#skills" class="hover:text-emerald-400 transition-colors">Skills</a>
                 <a href="#projects" class="hover:text-emerald-400 transition-colors">Projects</a>
                 <a href="#education" class="hover:text-emerald-400 transition-colors">Education</a>
-                <!-- FIXED: Changed to relative path -->
                 <a href="resume/hadhi_havath.pdf" download class="px-5 py-2 rounded-full border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 transition-all flex items-center gap-2 group">
                     Resume <i data-lucide="download" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
                 </a>
             </div>
 
-            <!-- Mobile Menu Button -->
             <button id="menu-btn" class="md:hidden text-slate-100">
                 <i data-lucide="menu" id="menu-icon"></i>
             </button>
         </div>
 
-        <!-- Mobile Nav Menu -->
         <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-slate-900 border-b border-emerald-900/30 p-6 flex flex-col gap-4 shadow-xl">
             <a href="#about" class="mobile-link text-left py-2 hover:text-emerald-400">About</a>
             <a href="#skills" class="mobile-link text-left py-2 hover:text-emerald-400">Skills</a>
             <a href="#projects" class="mobile-link text-left py-2 hover:text-emerald-400">Projects</a>
             <a href="#education" class="mobile-link text-left py-2 hover:text-emerald-400">Education</a>
-            <!-- FIXED: Changed to relative path -->
             <a href="resume/hadhi_havath.pdf" download class="mt-2 text-center py-3 rounded bg-emerald-600/20 text-emerald-400 border border-emerald-600/50">
                 Download Resume
             </a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
-        <!-- Background Decorative Elements -->
         <div class="absolute top-20 right-0 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
         <div class="absolute bottom-0 left-0 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
 
@@ -119,19 +108,17 @@
                         <a href="#contact" class="px-8 py-3 rounded-full bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]">
                             Contact Me
                         </a>
-                        <!-- FIXED: Changed to relative path -->
                         <a href="resume/hadhi_havath.pdf" download class="px-8 py-3 rounded-full border border-slate-700 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-slate-300 transition-all flex items-center gap-2">
                             <i data-lucide="download" class="w-4 h-4"></i> Download CV
                         </a>
                     </div>
                 </div>
 
-                <!-- Profile Image -->
                 <div class="flex-1 flex justify-center md:justify-end">
                     <div class="relative w-64 h-64 md:w-80 md:h-80 group">
                         <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
                         <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                        <!-- FIXED: Changed to relative path, rounded-3xl, and object-top -->
+                        
                         <img 
                             src="images/havath.png" 
                             alt="Muhammed Hadhi Havath"
@@ -139,7 +126,6 @@
                             onerror="this.onerror=null;this.src='https://via.placeholder.com/400x400/0f172a/10b981?text=MHH';"
                         />
                         
-                        <!-- Floating Expertise Badges -->
                         <div class="absolute -right-4 top-10 bg-slate-900 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-400 shadow-lg z-20">
                             Ethical Hacking
                         </div>
@@ -152,7 +138,6 @@
         </div>
     </section>
 
-    <!-- About Section -->
     <section id="about" class="py-20 bg-slate-900/50">
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="mb-12 text-center">
@@ -163,8 +148,7 @@
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="space-y-6 text-slate-300 leading-relaxed">
                     <p>
-                        I am a passionate technology enthusiast with a Bachelor of Computer Application degree in progress from Calicut University. 
-                        My journey began at the College of Applied Science (IHRD) Thamarassery, where I built a strong foundation in computer science.
+                        I am a passionate technology enthusiast with a Bachelor of Computer Application degree from the College of Applied Science (IHRD) Thamarassery, affiliated with Calicut University.
                     </p>
                     <p>
                         My ultimate goal is to contribute to the IT industry as an <strong>Ethical Hacker</strong>. 
@@ -210,7 +194,6 @@
         </div>
     </section>
 
-    <!-- Skills Section -->
     <section id="skills" class="py-20">
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="mb-12">
@@ -219,12 +202,10 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-12 items-start">
-                <!-- Left Column -->
                 <div class="space-y-8">
-                    <!-- Languages -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
-                            <i data-lucide="code" class="w-5 h-5"></i> Languages
+                            <i data-lucide="code" class="w-5 h-5"></i> Languages & Frameworks
                         </h3>
                         <div class="space-y-6">
                             <div>
@@ -234,6 +215,33 @@
                                 </div>
                                 <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
                                     <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm font-medium text-slate-300">
+                                    <span>Node.js</span>
+                                    <span class="text-slate-500">80%</span>
+                                </div>
+                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm font-medium text-slate-300">
+                                    <span>React.js</span>
+                                    <span class="text-slate-500">85%</span>
+                                </div>
+                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm font-medium text-slate-300">
+                                    <span>JavaScript</span>
+                                    <span class="text-slate-500">80%</span>
+                                </div>
+                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 80%"></div>
                                 </div>
                             </div>
                             <div>
@@ -252,15 +260,6 @@
                                 </div>
                                 <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
                                     <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 75%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between mb-2 text-sm font-medium text-slate-300">
-                                    <span>JavaScript</span>
-                                    <span class="text-slate-500">80%</span>
-                                </div>
-                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: 80%"></div>
                                 </div>
                             </div>
                             <div>
@@ -284,7 +283,6 @@
                         </div>
                     </div>
 
-                    <!-- Development Environment -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
                             <i data-lucide="monitor" class="w-5 h-5"></i> Development & IDEs
@@ -305,7 +303,6 @@
                         </div>
                     </div>
 
-                    <!-- Design & QA -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
                             <i data-lucide="pen-tool" class="w-5 h-5"></i> Design & QA
@@ -327,9 +324,7 @@
                     </div>
                 </div>
 
-                <!-- Right Column -->
                 <div class="space-y-8">
-                    <!-- Security Arsenal -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
                             <i data-lucide="shield-alert" class="w-5 h-5"></i> Security Arsenal
@@ -357,7 +352,6 @@
                         </div>
                     </div>
 
-                    <!-- DevOps & Infrastructure -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
                             <i data-lucide="server" class="w-5 h-5"></i> DevOps & Infrastructure
@@ -384,7 +378,6 @@
                         </div>
                     </div>
 
-                    <!-- Databases -->
                     <div>
                         <h3 class="text-xl font-semibold text-emerald-400 mb-6 flex items-center gap-2">
                             <i data-lucide="database" class="w-5 h-5"></i> Databases
@@ -424,7 +417,6 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
     <section id="projects" class="py-20 bg-slate-900/50">
         <div class="container mx-auto px-6 max-w-5xl">
             <div class="mb-12">
@@ -433,7 +425,6 @@
             </div>
 
             <div class="grid gap-8">
-                <!-- Project 1 -->
                 <div class="group relative bg-slate-950 border border-slate-800 rounded-2xl p-8 hover:border-emerald-500/50 transition-all duration-300">
                     <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i data-lucide="globe" class="w-12 h-12"></i>
@@ -465,7 +456,6 @@
                     </div>
                 </div>
 
-                <!-- Project 2 -->
                 <div class="group relative bg-slate-950 border border-slate-800 rounded-2xl p-8 hover:border-emerald-500/50 transition-all duration-300">
                     <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i data-lucide="smartphone" class="w-12 h-12"></i>
@@ -496,7 +486,6 @@
                     </div>
                 </div>
 
-                <!-- Project 3 -->
                 <div class="group relative bg-slate-950 border border-slate-800 rounded-2xl p-8 hover:border-emerald-500/50 transition-all duration-300">
                     <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <i data-lucide="brain" class="w-12 h-12"></i>
@@ -527,42 +516,27 @@
         </div>
     </section>
 
-    <!-- Education Section -->
     <section id="education" class="py-20">
         <div class="container mx-auto px-6 max-w-3xl text-center">
             <h2 class="text-3xl font-bold text-slate-100 mb-12">Education Journey</h2>
             
             <div class="relative border-l-2 border-emerald-900/50 ml-4 md:ml-0 md:pl-0 space-y-12">
-                <!-- Education Item 1 -->
                 <div class="relative md:flex items-center justify-between md:flex-row-reverse text-left md:text-right group">
-                    <!-- Dot -->
                     <div class="absolute -left-[9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-slate-900 border-2 border-emerald-500 group-hover:bg-emerald-500 transition-colors"></div>
                     
                     <div class="ml-8 md:mr-8 md:ml-0 md:w-[45%]">
                         <h3 class="text-xl font-bold text-slate-100">Bachelor of Computer Application</h3>
-                        <p class="text-emerald-400 mb-2">Calicut University</p>
-                        <span class="inline-block px-2 py-1 bg-slate-800 rounded text-xs text-slate-400">In Progress</span>
+                        <p class="text-emerald-400 mb-1">College of Applied Science (IHRD) Thamarassery</p>
+                        <p class="text-slate-500 text-sm mb-2">Calicut University</p>
+                        <span class="inline-block px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded text-xs">Completed (2021 - 2024)</span>
                     </div>
                     <div class="hidden md:block md:w-[45%]"></div>
                 </div>
 
-                <!-- Education Item 2 -->
-                <div class="relative md:flex items-center justify-between text-left group">
-                    <!-- Dot -->
-                    <div class="absolute -left-[9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-slate-900 border-2 border-emerald-500 group-hover:bg-emerald-500 transition-colors"></div>
-                    
-                    <div class="ml-8 md:mr-0 md:w-[45%]">
-                        <h3 class="text-xl font-bold text-slate-100">College of Applied Science</h3>
-                        <p class="text-emerald-400 mb-2">(IHRD) Thamarassery</p>
-                        <span class="inline-block px-2 py-1 bg-slate-800 rounded text-xs text-slate-400">2021 - 2024</span>
-                    </div>
-                    <div class="hidden md:block md:w-[45%]"></div>
                 </div>
-            </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" class="py-20 bg-emerald-900/5">
         <div class="container mx-auto px-6 max-w-4xl">
             <div class="bg-slate-950 rounded-3xl p-8 md:p-12 border border-slate-800 shadow-2xl relative overflow-hidden">
@@ -571,7 +545,7 @@
                 <div class="text-center mb-10">
                     <h2 class="text-3xl font-bold text-slate-100 mb-4">Let's Connect</h2>
                     <p class="text-slate-400">
-                        I'm currently seeking new opportunities in Cybersecurity and Software Development.
+                        I'm currently seeking new opportunities in Cybersecurity and Software Development. 
                         Have a question or want to work together?
                     </p>
                 </div>
@@ -602,7 +576,6 @@
                     </div>
                 </div>
 
-                <!-- FIXED: Changed to relative path -->
                 <div class="mt-12 text-center">
                     <a href="resume/hadhi_havath.pdf" download class="inline-flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full font-medium transition-all shadow-lg shadow-emerald-900/20">
                         <i data-lucide="download" class="w-4 h-4"></i> Download Full Resume
@@ -612,12 +585,10 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="py-8 bg-slate-950 border-t border-slate-900 text-center text-slate-500 text-sm">
         <p>&copy; <span id="year"></span> Muhammed Hadhi Havath. All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
     <script>
         // Initialize Icons
         lucide.createIcons();
