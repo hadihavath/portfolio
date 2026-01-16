@@ -27,7 +27,6 @@
         }
     </script>
     <style>
-        /* Custom scrollbar for Webkit browsers */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -597,13 +596,10 @@
     </footer>
 
     <script>
-        // Initialize Icons
         lucide.createIcons();
 
-        // Set Current Year
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Mobile Menu Toggle
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const menuIcon = document.getElementById('menu-icon');
@@ -613,7 +609,6 @@
             isMenuOpen = !isMenuOpen;
             mobileMenu.classList.toggle('hidden');
             
-            // Re-render icon
             menuBtn.innerHTML = '';
             const i = document.createElement('i');
             i.setAttribute('data-lucide', isMenuOpen ? 'x' : 'menu');
@@ -621,7 +616,6 @@
             lucide.createIcons();
         });
 
-        // Close mobile menu when clicking a link
         document.querySelectorAll('.mobile-link').forEach(link => {
             link.addEventListener('click', () => {
                 isMenuOpen = false;
@@ -634,7 +628,6 @@
             });
         });
 
-        // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 20) {
