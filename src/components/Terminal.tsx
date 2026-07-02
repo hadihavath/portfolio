@@ -113,7 +113,7 @@ export function Terminal() {
 
               // Apply a reasonable upper cap to prevent table formatting blowup on very long text
               ipWidth = Math.min(ipWidth, 40);
-              locWidth = Math.min(locWidth, 45);
+              locWidth = Math.min(locWidth, 70);
               devWidth = Math.min(devWidth, 30);
 
               let logTable =
