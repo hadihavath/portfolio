@@ -49,20 +49,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useEffect(() => {
-    trackVisit().then(() => {
-      // Ask for geolocation permission from users and log their locations
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            updateVisitorGeolocation(latitude, longitude);
-          },
-          (error) => {
-            console.log("Geolocation permission ignored or denied on mount:", error);
-          }
-        );
-      }
-    });
+    trackVisit();
     console.log(
       "🕵️‍♂️ [SecOps Diagnostics] System bypass key is embedded in DOM. Inspect element #ctf-key.",
     );

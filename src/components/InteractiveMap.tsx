@@ -13,7 +13,7 @@ export function InteractiveMap() {
   const [terminalLogs, setTerminalLogs] = useState<string[]>([
     "// SecOps Geo-Lock Module Initialized",
     "// Target: Hadhi Havath (Calicut, Kerala)",
-    "// Standing by for client GPS hand-shake..."
+    "// Click anywhere on this widget to establish GPS handshake..."
   ]);
 
   const addLog = (log: string) => {
@@ -74,7 +74,16 @@ export function InteractiveMap() {
   };
 
   return (
-    <div className="glass rounded-2xl p-4 border border-border/50 relative overflow-hidden flex flex-col gap-4 shadow-lg min-h-[350px]">
+    <div
+      onClick={() => {
+        if (gpsStatus === "idle") {
+          handleLocate();
+        }
+      }}
+      className={`glass rounded-2xl p-4 border border-border/50 relative overflow-hidden flex flex-col gap-4 shadow-lg min-h-[350px] transition-all duration-300 ${
+        gpsStatus === "idle" ? "cursor-pointer hover:border-[color:var(--neon)]/50 group/widget" : ""
+      }`}
+    >
       {/* Grid overlay */}
       <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
       
