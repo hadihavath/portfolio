@@ -20,8 +20,9 @@ import { CursorGlow } from "@/components/CursorGlow";
 import { MatrixRain } from "@/components/MatrixRain";
 import { Terminal } from "@/components/Terminal";
 import { ProjectCard } from "@/components/ProjectCard";
+import { InteractiveMap } from "@/components/InteractiveMap";
 import { profile, repos, stack } from "@/data/profile";
-import { trackVisit } from "@/lib/visitor-tracker";
+import { trackVisit, updateVisitorGeolocation } from "@/lib/visitor-tracker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,7 +49,20 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useEffect(() => {
-    trackVisit();
+    trackVisit().then(() => {
+      // Ask for geolocation permission from users and log their locations
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            updateVisitorGeolocation(latitude, longitude);
+          },
+          (error) => {
+            console.log("Geolocation permission ignored or denied on mount:", error);
+          }
+        );
+      }
+    });
     console.log(
       "🕵️‍♂️ [SecOps Diagnostics] System bypass key is embedded in DOM. Inspect element #ctf-key.",
     );
@@ -427,68 +441,80 @@ function Projects() {
 function Contact() {
   return (
     <section id="contact" className="relative px-6 py-32">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl glass p-10 text-center neon-border md:p-16"
+          className="relative overflow-hidden rounded-3xl glass p-8 md:p-12 lg:p-16 neon-border"
         >
-          <div className="absolute inset-0 grid-bg opacity-50" />
+          <div className="absolute inset-0 grid-bg opacity-50 pointer-events-none" />
           <div className="pointer-events-none absolute -top-20 left-1/2 size-96 -translate-x-1/2 rounded-full bg-[color:var(--neon)]/20 blur-[100px]" />
-          <div className="relative">
-            <TerminalIcon className="mx-auto mb-6 size-10 text-[color:var(--neon)]" />
-            <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
-              Let's <span className="glow-text-magenta">ship something</span> together.
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
-              I'm open to full-time roles, freelance builds, and security audits. Get in touch via
-              any of the channels below.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:border-[color:var(--neon)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon)_40%,transparent)]"
-              >
-                <Github className="size-4" />
-                github / @hadhihavath
-              </a>
-              <a
-                href="mailto:mrhavath@gmail.com"
-                className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:border-[color:var(--neon-3)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon-3)_40%,transparent)]"
-              >
-                <Mail className="size-4" />
-                email / mrhavath@gmail.com
-              </a>
-              <a
-                href="https://wa.me/919207659510"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:border-[color:var(--neon)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon)_40%,transparent)]"
-              >
-                <MessageCircle className="size-4" />
-                whatsapp / +919207659510
-              </a>
-              <a
-                href="https://instagram.com/mr.havath"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3 text-sm font-medium transition-all hover:scale-105 hover:border-[color:var(--neon-2)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon-2)_40%,transparent)]"
-              >
-                <Instagram className="size-4" />
-                instagram / @mr.havath
-              </a>
+          
+          <div className="relative z-10 grid gap-10 lg:grid-cols-12 items-stretch">
+            {/* Left Column: Contact text & details */}
+            <div className="lg:col-span-7 flex flex-col justify-between text-left space-y-6">
+              <div className="space-y-4">
+                <TerminalIcon className="size-10 text-[color:var(--neon)]" />
+                <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl leading-none">
+                  Let's <span className="glow-text-magenta">ship something</span> together.
+                </h2>
+                <p className="max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
+                  I'm open to full-time roles, freelance builds, and security audits. Get in touch via any of the channels below.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3.5">
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3.5 text-sm font-medium transition-all hover:scale-[1.03] hover:border-[color:var(--neon)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon)_40%,transparent)]"
+                >
+                  <Github className="size-4" />
+                  github / @hadhihavath
+                </a>
+                <a
+                  href="mailto:mrhavath@gmail.com"
+                  className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3.5 text-sm font-medium transition-all hover:scale-[1.03] hover:border-[color:var(--neon-3)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon-3)_40%,transparent)]"
+                >
+                  <Mail className="size-4" />
+                  email / mrhavath@gmail.com
+                </a>
+                <a
+                  href="https://wa.me/919207659510"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3.5 text-sm font-medium transition-all hover:scale-[1.03] hover:border-[color:var(--neon)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon)_40%,transparent)]"
+                >
+                  <MessageCircle className="size-4" />
+                  whatsapp / +919207659510
+                </a>
+                <a
+                  href="https://instagram.com/mr.havath"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl glass border-muted-foreground/20 px-5 py-3.5 text-sm font-medium transition-all hover:scale-[1.03] hover:border-[color:var(--neon-2)] hover:shadow-[0_0_15px_-3px_color-mix(in_oklab,var(--neon-2)_40%,transparent)]"
+                >
+                  <Instagram className="size-4" />
+                  instagram / @mr.havath
+                </a>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 border-t border-border/10 font-mono text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="size-3.5" /> remote · worldwide
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Zap className="size-3.5 text-[color:var(--neon)]" /> typically replies within 24h
+                </span>
+              </div>
             </div>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="size-3.5" /> remote · worldwide
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Zap className="size-3.5 text-[color:var(--neon)]" /> typically replies within 24h
-              </span>
+
+            {/* Right Column: Dynamic Cyberpunk Google Map */}
+            <div className="lg:col-span-5 flex flex-col justify-center">
+              <InteractiveMap />
             </div>
           </div>
         </motion.div>

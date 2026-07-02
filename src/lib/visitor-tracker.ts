@@ -18,17 +18,38 @@ function getCleanUserAgent(): string {
   let browser = "Unknown";
   let os = "Unknown OS";
 
-  if (ua.includes("Firefox")) browser = "Firefox";
-  else if (ua.includes("Chrome")) browser = "Chrome";
-  else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-  else if (ua.includes("Edge")) browser = "Edge";
-  else if (ua.includes("OPR") || ua.includes("Opera")) browser = "Opera";
+  // Browser detection (most specific signatures first to avoid false positives)
+  if (ua.includes("OPR") || ua.includes("Opera") || ua.includes("OPiOS")) {
+    browser = "Opera";
+  } else if (ua.includes("Edge") || ua.includes("Edg/") || ua.includes("EdgA") || ua.includes("EdgiOS")) {
+    browser = "Edge";
+  } else if (ua.includes("Firefox") || ua.includes("FxiOS")) {
+    browser = "Firefox";
+  } else if (ua.includes("Chrome") || ua.includes("CriOS")) {
+    browser = "Chrome";
+  } else if (ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("CriOS")) {
+    browser = "Safari";
+  }
 
-  if (ua.includes("Windows")) os = "Windows";
-  else if (ua.includes("Macintosh")) os = "macOS";
-  else if (ua.includes("Linux") && !ua.includes("Android")) os = "Linux";
-  else if (ua.includes("Android")) os = "Android";
-  else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+  // OS / Device detection
+  if (ua.includes("Android")) {
+    os = "Android";
+  } else if (ua.includes("iPhone")) {
+    os = "iPhone";
+  } else if (ua.includes("iPad")) {
+    os = "iPad";
+  } else if (ua.includes("Windows")) {
+    os = "Windows";
+  } else if (ua.includes("Macintosh")) {
+    // Check for iPad posing as Mac (Safari desktop mode)
+    if (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) {
+      os = "iPad";
+    } else {
+      os = "macOS";
+    }
+  } else if (ua.includes("Linux")) {
+    os = "Linux";
+  }
 
   return `${browser} on ${os}`;
 }
@@ -78,35 +99,109 @@ export async function trackVisit(): Promise<void> {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+    let dbLogId = log.id;
+
     if (supabaseUrl && supabaseAnonKey) {
-      // Send to Supabase Rest API directly to avoid importing heavy Supabase Client
-      await fetch(`${supabaseUrl}/rest/v1/visitor_logs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: supabaseAnonKey,
-          Authorization: `Bearer ${supabaseAnonKey}`,
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({
-          ip: log.ip,
-          location: log.location,
-          device: log.device,
-          referrer: log.referrer,
-          screen_resolution: log.screen_resolution,
-        }),
-      });
+      try {
+        // Send to Supabase Rest API directly to avoid importing heavy Supabase Client
+        const res = await fetch(`${supabaseUrl}/rest/v1/visitor_logs`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: supabaseAnonKey,
+            Authorization: `Bearer ${supabaseAnonKey}`,
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            ip: log.ip,
+            location: log.location,
+            device: log.device,
+            referrer: log.referrer,
+            screen_resolution: log.screen_resolution,
+          }),
+        });
+        if (res.ok) {
+          const inserted = await res.json();
+          if (inserted && inserted.length > 0 && inserted[0].id) {
+            dbLogId = inserted[0].id;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to insert log to Supabase:", err);
+      }
     } else {
       // Save locally to localStorage as fallback/demo
       const existingLogs: VisitorLog[] = JSON.parse(
         localStorage.getItem(LOCAL_STORAGE_KEY) || "[]",
       );
       existingLogs.unshift(log);
-      // Keep only last 50 logs locally to save space
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existingLogs.slice(0, 50)));
+      // Keep only last 150 logs locally to save space
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existingLogs.slice(0, 150)));
     }
+
+    sessionStorage.setItem("hadhi_portfolio_log_id", dbLogId.toString());
   } catch (error) {
     console.error("Failed to log visitor:", error);
+  }
+}
+
+export async function updateVisitorGeolocation(latitude: number, longitude: number): Promise<void> {
+  const logId = sessionStorage.getItem("hadhi_portfolio_log_id");
+  if (!logId) return;
+
+  const preciseLocString = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    if (supabaseUrl && supabaseAnonKey) {
+      // Get the existing location to append GPS coordinates
+      const getRes = await fetch(`${supabaseUrl}/rest/v1/visitor_logs?id=eq.${logId}&select=location`, {
+        method: "GET",
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+      });
+
+      let updatedLocation = preciseLocString;
+      if (getRes.ok) {
+        const data = await getRes.json();
+        if (data && data.length > 0 && data[0].location) {
+          const currentLoc = data[0].location;
+          // Avoid duplicate updates
+          if (currentLoc.includes("GPS:")) return;
+          updatedLocation = `${currentLoc} (${preciseLocString})`;
+        }
+      }
+
+      await fetch(`${supabaseUrl}/rest/v1/visitor_logs?id=eq.${logId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          location: updatedLocation,
+        }),
+      });
+    } else {
+      // Local storage fallback
+      const existingLogs: VisitorLog[] = JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_KEY) || "[]",
+      );
+      const index = existingLogs.findIndex((l) => l.id.toString() === logId);
+      if (index !== -1) {
+        if (!existingLogs[index].location.includes("GPS:")) {
+          existingLogs[index].location = `${existingLogs[index].location} (${preciseLocString})`;
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existingLogs));
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Failed to update visitor geolocation:", error);
   }
 }
 
@@ -117,7 +212,7 @@ export async function fetchVisitorLogs(): Promise<VisitorLog[]> {
   if (supabaseUrl && supabaseAnonKey) {
     try {
       const res = await fetch(
-        `${supabaseUrl}/rest/v1/visitor_logs?select=*&order=created_at.desc&limit=50`,
+        `${supabaseUrl}/rest/v1/visitor_logs?select=*&order=created_at.desc&limit=150`,
         {
           method: "GET",
           headers: {

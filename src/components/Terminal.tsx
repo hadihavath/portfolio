@@ -100,16 +100,32 @@ export function Terminal() {
                 },
               ]);
             } else {
+              // Determine column widths dynamically to prevent truncation of devices/locations/IPs
+              let ipWidth = 10; // minimum header width for "IP Address" is 10
+              let locWidth = 8;  // minimum header width for "Location" is 8
+              let devWidth = 6;  // minimum header width for "Device" is 6
+
+              logs.forEach((log) => {
+                if (log.ip && log.ip.length > ipWidth) ipWidth = log.ip.length;
+                if (log.location && log.location.length > locWidth) locWidth = log.location.length;
+                if (log.device && log.device.length > devWidth) devWidth = log.device.length;
+              });
+
+              // Apply a reasonable upper cap to prevent table formatting blowup on very long text
+              ipWidth = Math.min(ipWidth, 40);
+              locWidth = Math.min(locWidth, 45);
+              devWidth = Math.min(devWidth, 30);
+
               let logTable =
-                "IP Address      | Location                       | Device          | Date & Time\n";
+                `${"IP Address".padEnd(ipWidth)} | ${"Location".padEnd(locWidth)} | ${"Device".padEnd(devWidth)} | Date & Time\n`;
               logTable +=
-                "----------------|--------------------------------|-----------------|---------------------\n";
+                `${"-".repeat(ipWidth + 1)}|${"-".repeat(locWidth + 2)}|${"-".repeat(devWidth + 2)}|---------------------\n`;
 
               logs.forEach((log) => {
                 const date = new Date(log.created_at).toLocaleString();
-                const ip = log.ip.padEnd(15).substring(0, 15);
-                const loc = log.location.padEnd(30).substring(0, 30);
-                const dev = log.device.padEnd(15).substring(0, 15);
+                const ip = (log.ip || "Unknown").substring(0, ipWidth).padEnd(ipWidth);
+                const loc = (log.location || "Unknown").substring(0, locWidth).padEnd(locWidth);
+                const dev = (log.device || "Unknown").substring(0, devWidth).padEnd(devWidth);
                 logTable += `${ip} | ${loc} | ${dev} | ${date}\n`;
               });
 
@@ -334,7 +350,14 @@ export function Terminal() {
         className="max-h-72 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-border"
       >
         {history.map((item, index) => (
-          <div key={index} className="whitespace-pre-wrap leading-relaxed">
+          <div
+            key={index}
+            className={`${
+              item.text.includes("IP Address")
+                ? "whitespace-pre overflow-x-auto scrollbar-none"
+                : "whitespace-pre-wrap"
+            } leading-relaxed`}
+          >
             {item.type === "input" ? (
               <div className="flex gap-2">
                 <span className="text-[color:var(--neon)] select-none">{item.prompt}</span>
