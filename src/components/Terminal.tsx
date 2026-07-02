@@ -202,7 +202,7 @@ export function Terminal() {
         case "projects":
           output =
             `Recent Projects:\n` +
-            repos.map((r) => `  - ${r.name}: ${r.description} (${r.url})`).join("\n");
+            repos.map((r) => `  - ${r.name}: ${r.description} [Status: Private]`).join("\n");
           break;
         case "contact":
           output =
