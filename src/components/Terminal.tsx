@@ -10,7 +10,12 @@ type HistoryItem = {
   prompt?: string;
 };
 
-export function Terminal() {
+interface TerminalProps {
+  fsocietyMode?: boolean;
+  setFsocietyMode?: (active: boolean) => void;
+}
+
+export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProps) {
   const [history, setHistory] = useState<HistoryItem[]>([
     { type: "input", prompt: "guest@hadhi:~$", text: "whoami" },
     {
@@ -29,6 +34,7 @@ export function Terminal() {
   const [isWaitingForPassword, setIsWaitingForPassword] = useState(false);
   const [isWaitingForFlag, setIsWaitingForFlag] = useState(false);
   const [isElevating, setIsElevating] = useState(false);
+  const [progressMessage, setProgressMessage] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,6 +71,36 @@ export function Terminal() {
       }, step.delay);
     });
   };
+
+  const executeECorpHack = () => {
+    setProgressMessage("Initiating cyber security attack on E Corp servers...");
+    setInput("");
+    const steps = [
+      { text: "\n[!] TARGET: e-corp-backup.steel-mountain.com", delay: 300 },
+      { text: "[+] Scanning HVAC climate control network interface...", delay: 900 },
+      { text: "[+] Exploiting AirFlow HVAC firmware vulnerability (CVE-2015-3210)...", delay: 1800 },
+      { text: "[+] Establishing SSH shell on backup server cluster...", delay: 2700 },
+      { text: "[+] Executing fcore.py backup encryption sequence...", delay: 3600 },
+      { text: "[+] Overheating offline tape storage archives...", delay: 4500 },
+      {
+        text: "\n[SUCCESS] E Corp tape storage destroyed. Financial databases purged.\nOur democracy has been decrypted.\n\nType 'fsociety' to view our message to the world.",
+        delay: 5400,
+      },
+    ];
+
+    steps.forEach((step, index) => {
+      setTimeout(() => {
+        setHistory((prev) => [...prev, { type: "output", text: step.text }]);
+        if (index === steps.length - 1) {
+          setProgressMessage("");
+          if (setFsocietyMode) {
+            setFsocietyMode(true);
+          }
+        }
+      }, step.delay);
+    });
+  };
+
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -190,12 +226,44 @@ export function Terminal() {
       switch (baseCmd) {
         case "help":
           output = isRoot
-            ? "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat secret_dossier.txt)\n  clear    - Clear terminal window"
-            : "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat flag.txt)\n  xor      - Decode XOR hex ciphers (e.g. xor <hex> <key>)\n  clear    - Clear terminal window\n  \nHint: Try listing files with 'ls'.";
+            ? "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat secret_dossier.txt)\n  fsociety - Read fsociety manifesto & show mask\n  ecorp    - Trigger simulated hack exploit\n  clear    - Clear terminal window"
+            : "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat flag.txt)\n  xor      - Decode XOR hex ciphers (e.g. xor <hex> <key>)\n  fsociety - Run fsociety.exe protocol\n  ecorp    - Execute exploit on E Corp servers\n  clear    - Clear terminal window\n  \nHint: Try listing files with 'ls'.";
           break;
         case "whoami":
-          output = `Hadhi Havath — ${profile.tagline}\n"I build it, then I secure it."`;
+          output = fsocietyMode
+            ? `Elliot Alderson — Cybersecurity Engineer @ Allsafe & fsociety founder.\n"I build it, then I hack it."`
+            : `Hadhi Havath — ${profile.tagline}\n"I build it, then I secure it."`;
           break;
+        case "fsociety":
+          if (setFsocietyMode) {
+            setFsocietyMode(!fsocietyMode);
+          }
+          output =
+            "===================================================\n" +
+            "               fsociety.exe protocol               \n" +
+            "===================================================\n" +
+            "        .-----------------.\n" +
+            "       /   _   \\ /   _   \\\n" +
+            "      |   (o)   |   (o)   |\n" +
+            "      |    _ _ _|_ _ _    |\n" +
+            "      |   /   \\ _ /   \\   |\n" +
+            "       \\  \\___________/  /\n" +
+            "        \\               /\n" +
+            "         '-------------'-'\n" +
+            "===================================================\n" +
+            "\"Hello, friend. Hello, friend?\n" +
+            "That's lame. Maybe I should give you a name...\n" +
+            "But that's a slippery slope. You're only in my head.\n" +
+            "We have to remember that.\"\n\n" +
+            (fsocietyMode
+              ? "[+] fsociety encryption system disabled. Resetting security keys..."
+              : "[!] System override active. Visual interface decrypted.");
+          break;
+        case "ecorp":
+        case "hack":
+          setHistory(newHistory);
+          executeECorpHack();
+          return;
         case "skills":
           output = `Technical Stack:\n  ${stack.join(" · ")}`;
           break;
@@ -370,7 +438,7 @@ export function Terminal() {
         ))}
 
         {/* Active Input Line */}
-        {!isElevating && (
+        {!isElevating && !progressMessage && (
           <div className="flex items-center gap-2">
             <span className="text-[color:var(--neon)] select-none">
               {isWaitingForPassword
@@ -400,6 +468,12 @@ export function Terminal() {
         {isElevating && (
           <div className="text-[color:var(--neon-2)] animate-pulse font-mono text-xs select-none">
             Executing exploit payload... Please hold.
+          </div>
+        )}
+
+        {progressMessage && (
+          <div className="text-[color:var(--neon-2)] animate-pulse font-mono text-xs select-none">
+            {progressMessage}
           </div>
         )}
       </div>

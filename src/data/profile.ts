@@ -7,7 +7,7 @@ export const profile = {
   avatar: avatarImage,
   bio: "I build it, then I secure it.",
   tagline:
-    "Full Stack Developer specializing in Python & Django. Ethical Hacking & AI/ML Researcher.",
+    "Full Stack Developer specializing in Python & Django. Cybersecurity Analyst & AI Researcher (Ex-Allsafe).",
   github: "https://github.com/hadhihavath",
   followers: 1,
   following: 3,
@@ -46,6 +46,14 @@ export type Repo = {
 
 // All public GitHub repositories captured to store offline before making them private
 export const repos: Repo[] = [
+  {
+    name: "steel-mountain-hvac",
+    language: "Python",
+    description: "HVAC climate control override exploit. Simulates backup tape archive degradation via ambient temperature alteration. Audit use only.",
+    url: "https://github.com/hadhihavath/steel-mountain-hvac",
+    stars: 13,
+    forks: 5,
+  },
   {
     name: "jarvis",
     language: "Python",

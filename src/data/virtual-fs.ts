@@ -16,6 +16,30 @@ export const GUEST_FILES: Record<string, VirtualFile> = {
     content:
       "Recent Projects:\n- jarvis: Personal AI assistant\n- wifi-security-check: Audit nearby Wi-Fi networks\n- ai_detector: AI text heuristics\n\nType 'projects' for the full repository list.",
   },
+  "elliot_journal.txt": {
+    name: "elliot_journal.txt",
+    content:
+      "What if I'm not real?\n" +
+      "What if Mr. Robot is the one writing these files?\n" +
+      "Every night I sit in front of this terminal, planning the 5/9 hack.\n" +
+      "But Allsafe is monitoring my network.\n" +
+      "I need to make sure the Raspberry Pi at Steel Mountain is active.\n" +
+      "He's talking to me again. I need to take my pills.",
+  },
+  "fsociety_manifesto.md": {
+    name: "fsociety_manifesto.md",
+    content:
+      "=====================================================\n" +
+      "              A MESSAGE TO THE WORLD                 \n" +
+      "=====================================================\n\n" +
+      "We are fsociety. We are here to free you.\n\n" +
+      "For too long, E Corp has held the world hostage with debt.\n" +
+      "They own your homes, your cars, your lives, and your minds.\n" +
+      "We have encrypted their databases. We have erased the debt.\n\n" +
+      "We live in a kingdom of bullshit. But today, the debt is zero.\n" +
+      "You are free. The system is down.\n\n" +
+      "=====================================================",
+  },
   "flag.txt": {
     name: "flag.txt",
     content:
@@ -34,6 +58,22 @@ export const ROOT_FILES: Record<string, VirtualFile> = {
     name: "resume.pdf",
     content:
       "[+] Opening Hadhi Havath's professional profile...\n\n(A browser tab will automatically open to https://github.com/hadhihavath)",
+  },
+  "fcore.py": {
+    name: "fcore.py",
+    content:
+      "import os\nimport sys\nimport time\n\n" +
+      "def override_hvac_thermostats():\n" +
+      "    print('[!] Bypassing Steel Mountain HVAC control check...')\n" +
+      "    # Target climate zones housing E Corp tape backup servers\n" +
+      "    zones = ['Zone A', 'Zone B', 'Zone C', 'Zone D']\n" +
+      "    for zone in zones:\n" +
+      "        print(f'[+] Injecting temperature override into {zone} thermostat...')\n" +
+      "        time.sleep(0.5)\n" +
+      "    print('[!] TEMPERATURE SET TO 140°F (Tape destruction threshold)')\n" +
+      "    print('[SUCCESS] HVAC exploit deployed. Archives are melting.')\n\n" +
+      "if __name__ == '__main__':\n" +
+      "    override_hvac_thermostats()",
   },
   "classified.bin": {
     name: "classified.bin",

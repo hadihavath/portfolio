@@ -1,7 +1,7 @@
 /* mr.havath */
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   Github,
   Mail,
@@ -47,7 +47,30 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function GlitchOverlay() {
+  return (
+    <div className="fixed inset-0 z-50 pointer-events-none bg-black/95 flex flex-col items-center justify-center font-mono">
+      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:12px_12px] animate-pulse" />
+      <div className="absolute inset-0 bg-red-950/20 pointer-events-none select-none animate-pulse" />
+      <div className="relative z-10 text-center px-6">
+        <div className="text-red-500 font-bold text-3xl md:text-5xl tracking-widest uppercase mb-4 animate-[blink_0.2s_infinite]">
+          [!] INTRUSION DETECTED
+        </div>
+        <div className="text-white text-base md:text-lg tracking-wider animate-[pulse_0.4s_infinite] select-none">
+          OUR DEMOCRACY HAS BEEN HACKED.
+        </div>
+        <div className="text-red-600/70 text-xs mt-8 tracking-widest font-mono">
+          FSOCIETY.EXE CORRUPTING ALLSAFE PRIVILEGE LOGS...
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Index() {
+  const [fsocietyMode, setFsocietyMode] = useState(false);
+  const [isGlitching, setIsGlitching] = useState(false);
+
   useEffect(() => {
     trackVisit();
     console.log(
@@ -55,19 +78,26 @@ function Index() {
     );
   }, []);
 
+  const handleToggleFsociety = (val: boolean) => {
+    setIsGlitching(true);
+    setTimeout(() => setIsGlitching(false), 1000);
+    setFsocietyMode(val);
+  };
+
   return (
-    <main className="relative min-h-screen overflow-x-hidden">
+    <main className={`relative min-h-screen overflow-x-hidden transition-colors duration-500 ${fsocietyMode ? "fsociety-theme" : ""}`}>
+      {isGlitching && <GlitchOverlay />}
       <div id="ctf-key" style={{ display: "none" }} data-key="hadhi" />
       <CursorGlow />
       <ScanLine />
-      <Nav />
-      <Hero />
+      <Nav fsocietyMode={fsocietyMode} setFsocietyMode={handleToggleFsociety} />
+      <Hero fsocietyMode={fsocietyMode} setFsocietyMode={handleToggleFsociety} />
       <Marquee />
-      <About />
+      <About fsocietyMode={fsocietyMode} />
       <Stack />
       <Projects />
       <Contact />
-      <Footer />
+      <Footer fsocietyMode={fsocietyMode} />
     </main>
   );
 }
@@ -87,7 +117,7 @@ function ScanLine() {
   );
 }
 
-function Nav() {
+function Nav({ fsocietyMode, setFsocietyMode }: { fsocietyMode: boolean; setFsocietyMode: (val: boolean) => void }) {
   const links = [
     { href: "#about", label: "About" },
     { href: "#stack", label: "Stack" },
@@ -99,7 +129,7 @@ function Nav() {
       <div className="mx-auto mt-4 flex max-w-6xl items-center justify-between rounded-full glass px-5 py-3">
         <a href="#top" className="flex items-center gap-2 font-mono text-sm">
           <span className="size-2 rounded-full bg-[color:var(--neon)] animate-pulse-glow" />
-          <span className="glow-text">hadhi.havath</span>
+          <span className="glow-text">{fsocietyMode ? "fsociety" : "hadhi.havath"}</span>
         </a>
         <nav className="hidden gap-6 md:flex">
           {links.map((l) => (
@@ -112,22 +142,36 @@ function Nav() {
             </a>
           ))}
         </nav>
-        <a
-          href={profile.github}
-          target="_blank"
-          rel="noreferrer"
-          className="group inline-flex items-center gap-2 rounded-full border border-[color:var(--neon)]/40 bg-[color:var(--neon)]/10 px-4 py-1.5 text-xs font-mono text-[color:var(--neon)] transition-all hover:bg-[color:var(--neon)]/20"
-        >
-          <Github className="size-3.5" />
-          github
-          <ArrowUpRight className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setFsocietyMode(!fsocietyMode)}
+            className={`font-mono text-[10px] md:text-xs rounded-full border px-3 py-1.5 transition-all select-none duration-300 cursor-pointer ${
+              fsocietyMode
+                ? "bg-red-950/40 border-red-500/70 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:bg-red-950/70"
+                : "bg-black/40 border-muted-foreground/30 text-muted-foreground hover:border-[color:var(--neon)] hover:text-[color:var(--neon)]"
+            }`}
+          >
+            {fsocietyMode ? "fsociety.exe [ACTIVE]" : "run fsociety.exe"}
+          </button>
+
+          <a
+            href={profile.github}
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex items-center gap-2 rounded-full border border-[color:var(--neon)]/40 bg-[color:var(--neon)]/10 px-4 py-1.5 text-xs font-mono text-[color:var(--neon)] transition-all hover:bg-[color:var(--neon)]/20"
+          >
+            <Github className="size-3.5" />
+            github
+            <ArrowUpRight className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </a>
+        </div>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ fsocietyMode, setFsocietyMode }: { fsocietyMode: boolean; setFsocietyMode: (val: boolean) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
@@ -141,7 +185,7 @@ function Hero() {
     >
       <div className="absolute inset-0 grid-bg" />
       <div className="absolute inset-0 overflow-hidden">
-        <MatrixRain />
+        <MatrixRain fsocietyMode={fsocietyMode} />
       </div>
       {/* floating orbs */}
       <div className="pointer-events-none absolute left-10 top-32 size-72 rounded-full bg-[color:var(--neon)]/20 blur-[100px] animate-float" />
@@ -155,11 +199,19 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 font-mono text-xs"
+          className={`mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 font-mono text-xs ${
+            fsocietyMode ? "border-red-500/30" : ""
+          }`}
         >
-          <span className="size-1.5 rounded-full bg-[color:var(--neon)] animate-pulse-glow" />
+          <span
+            className={`size-1.5 rounded-full ${
+              fsocietyMode ? "bg-red-500 animate-pulse" : "bg-[color:var(--neon)] animate-pulse-glow"
+            }`}
+          />
           <span className="text-muted-foreground">status</span>
-          <span className="text-[color:var(--neon)]">/ open to work · world-wide</span>
+          <span className={fsocietyMode ? "text-red-400 font-bold uppercase tracking-wider animate-[blink_1s_step-end_infinite]" : "text-[color:var(--neon)]"}>
+            {fsocietyMode ? "/ just a tech." : "/ open to work · just a tech"}
+          </span>
         </motion.div>
 
         <motion.h1
@@ -168,16 +220,19 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="font-display text-5xl font-bold leading-[0.95] tracking-tight md:text-7xl lg:text-8xl"
         >
-          <span className="glow-text">I build it,</span>
+          <span className="glow-text">{fsocietyMode ? "We are" : "I build it,"}</span>
           <br />
           <span
-            className="animate-gradient bg-clip-text text-transparent"
+            className={fsocietyMode ? "glitch-text-effect font-bold text-red-500" : "animate-gradient bg-clip-text text-transparent"}
+            data-text={fsocietyMode ? "fsociety." : "then I secure it."}
             style={{
-              backgroundImage:
-                "linear-gradient(90deg, var(--neon), var(--neon-3), var(--neon-2), var(--neon))",
+              backgroundImage: fsocietyMode
+                ? "none"
+                : "linear-gradient(90deg, var(--neon), var(--neon-3), var(--neon-2), var(--neon))",
+              textShadow: fsocietyMode ? "0 0 10px rgba(239, 68, 68, 0.6)" : "inherit"
             }}
           >
-            then I secure it.
+            {fsocietyMode ? "fsociety." : "then I secure it."}
           </span>
         </motion.h1>
 
@@ -187,9 +242,19 @@ function Hero() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mx-auto mt-7 max-w-2xl text-base text-muted-foreground md:text-lg"
         >
-          I'm <span className="text-foreground">Hadhi Havath</span> — full-stack engineer in Python
-          & Django, ethical hacker, and AI/ML researcher. Shipping code by day, breaking it by
-          night.
+          {fsocietyMode ? (
+            <>
+              Our democracy has been hacked. <span className="text-foreground">Elliot Alderson</span> at{" "}
+              <span className="text-red-400 font-bold">Allsafe Cybersecurity</span> by day,
+              securing or breaking the conglomerate servers by night.
+            </>
+          ) : (
+            <>
+              I'm <span className="text-foreground">Hadhi Havath</span> — full-stack engineer in Python
+              & Django, ethical hacker, and AI/ML researcher. Shipping code by day, breaking it by
+              night.
+            </>
+          )}
         </motion.p>
 
         <motion.div
@@ -222,7 +287,7 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.7 }}
           className="mx-auto mt-14 max-w-2xl text-left"
         >
-          <Terminal />
+          <Terminal fsocietyMode={fsocietyMode} setFsocietyMode={setFsocietyMode} />
         </motion.div>
       </motion.div>
     </section>
@@ -273,7 +338,7 @@ function SectionHeading({ kicker, title, sub }: { kicker: string; title: string;
   );
 }
 
-function About() {
+function About({ fsocietyMode }: { fsocietyMode: boolean }) {
   const stats = [
     { label: "Public repos", value: profile.publicRepos, icon: Code2 },
     { label: "Building since", value: "2020", icon: Cpu },
@@ -337,6 +402,23 @@ function About() {
                 pipelines — and auditing the network layer around them. I like products that have a
                 <span className="text-foreground"> sharp edge</span> and a clean back of house.
               </p>
+            </div>
+            
+            {/* Mr. Robot 'just a tech' dialogue block */}
+            <div className={`mt-6 border-l-2 pl-4 py-2.5 italic text-sm font-mono bg-black/20 rounded-r-lg max-w-lg select-none transition-all duration-500 ${
+              fsocietyMode ? "border-red-500 bg-red-950/5 text-red-400" : "border-[color:var(--neon)]/50 text-muted-foreground"
+            }`}>
+              {fsocietyMode ? (
+                <div className="space-y-1">
+                  <p className="text-red-400 font-semibold">"I don't care about the money. I'm just a tech, after all."</p>
+                  <p className="text-[10px] text-red-500/70 not-italic uppercase tracking-widest font-sans">// Elliot Alderson (Pilot Confrontation)</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p className="text-[color:var(--neon)] font-semibold">"I build it, then I secure it. I'm just a tech, after all."</p>
+                  <p className="text-[10px] text-muted-foreground/60 not-italic uppercase tracking-widest font-sans">// System Audit Log</p>
+                </div>
+              )}
             </div>
             <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
               {stats.map((s) => (
@@ -510,14 +592,14 @@ function Contact() {
   );
 }
 
-function Footer() {
+function Footer({ fsocietyMode }: { fsocietyMode?: boolean }) {
   return (
     <footer className="border-t border-border px-6 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 font-mono text-xs text-muted-foreground md:flex-row">
-        <div>© {new Date().getFullYear()} hadhi.havath — built & secured.</div>
+        <div>© {new Date().getFullYear()} {fsocietyMode ? "fsociety" : "hadhi.havath"} — built & {fsocietyMode ? "liberated." : "secured."}</div>
         <div className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-[color:var(--neon)] animate-pulse-glow" />
-          system online
+          <span className={`size-1.5 rounded-full ${fsocietyMode ? "bg-red-500 animate-pulse" : "bg-[color:var(--neon)] animate-pulse-glow"}`} />
+          {fsocietyMode ? "ecorp servers down" : "system online"}
         </div>
       </div>
     </footer>

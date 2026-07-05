@@ -219,3 +219,82 @@ html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+/* fsociety theme override */
+.fsociety-theme {
+  --background: oklch(0.08 0.015 20);
+  --foreground: oklch(0.95 0.02 20);
+  --card: oklch(0.12 0.02 20);
+  --card-foreground: oklch(0.95 0.02 20);
+  --primary: oklch(0.6 0.22 20);
+  --primary-foreground: oklch(0.98 0.01 20);
+  --secondary: oklch(0.16 0.03 20);
+  --secondary-foreground: oklch(0.95 0.02 20);
+  --muted: oklch(0.15 0.02 20);
+  --muted-foreground: oklch(0.6 0.03 20);
+  --accent: oklch(0.65 0.25 20);
+  --accent-foreground: oklch(0.08 0.015 20);
+  --border: oklch(0.3 0.04 20 / 60%);
+  --ring: oklch(0.6 0.22 20);
+  --neon: oklch(0.6 0.22 20); /* fsociety red */
+  --neon-2: oklch(0.8 0.2 60); /* orange */
+  --neon-3: oklch(0.9 0.1 90); /* yellow */
+}
+
+/* Screen glitch overlay keyframes */
+@keyframes glitch-anim-1 {
+  0% {
+    clip-path: inset(20% 0 30% 0);
+    transform: skew(0.5deg);
+  }
+  20% {
+    clip-path: inset(80% 0 10% 0);
+    transform: skew(-0.8deg);
+  }
+  40% {
+    clip-path: inset(5% 0 85% 0);
+    transform: skew(1.2deg);
+  }
+  60% {
+    clip-path: inset(50% 0 20% 0);
+    transform: skew(-0.4deg);
+  }
+  80% {
+    clip-path: inset(15% 0 70% 0);
+    transform: skew(0.6deg);
+  }
+  100% {
+    clip-path: inset(20% 0 30% 0);
+    transform: skew(0.5deg);
+  }
+}
+
+.glitch-text-effect {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text-effect::before,
+.glitch-text-effect::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--background);
+}
+
+.glitch-text-effect::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff003c;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim-1 1s infinite linear alternate-reverse;
+}
+
+.glitch-text-effect::after {
+  left: -2px;
+  text-shadow: -1px 0 #00e5ff, 0 1px #ff003c;
+  clip: rect(85px, 450px, 140px, 0);
+  animation: glitch-anim-1 1.5s infinite linear alternate-reverse;
+}

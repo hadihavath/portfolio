@@ -1,14 +1,20 @@
 /* mr.havath */
 import { useEffect, useRef } from "react";
 
-export function MatrixRain() {
+interface MatrixRainProps {
+  fsocietyMode?: boolean;
+}
+
+export function MatrixRain({ fsocietyMode = false }: MatrixRainProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current!;
     const ctx = canvas.getContext("2d")!;
     let raf = 0;
 
-    const chars = "01ハドアク#@$%abcdef</>HACK".split("");
+    const chars = fsocietyMode
+      ? "01FSOCIETYECORPhellofriend59".split("")
+      : "01ハドアク#@$%abcdef</>HACK".split("");
     const fontSize = 14;
     let cols = 0;
     let drops: number[] = [];
@@ -26,7 +32,7 @@ export function MatrixRain() {
     const draw = () => {
       ctx.fillStyle = "rgba(10, 12, 20, 0.08)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#5cffb0";
+      ctx.fillStyle = fsocietyMode ? "#ff003c" : "#5cffb0";
       ctx.font = `${fontSize}px JetBrains Mono, monospace`;
 
       for (let i = 0; i < cols; i++) {
@@ -45,7 +51,7 @@ export function MatrixRain() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [fsocietyMode]);
 
   return <canvas ref={ref} className="absolute inset-0 h-full w-full opacity-25" aria-hidden />;
 }
