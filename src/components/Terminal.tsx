@@ -1,8 +1,7 @@
 /* mr.havath */
 import { useEffect, useRef, useState } from "react";
 import { profile, repos, stack } from "@/data/profile";
-import { fetchVisitorLogs } from "@/lib/visitor-tracker";
-import { GUEST_FILES, ROOT_FILES } from "@/data/virtual-fs";
+import { GUEST_FILES } from "@/data/virtual-fs";
 
 type HistoryItem = {
   type: "input" | "output";
@@ -10,32 +9,21 @@ type HistoryItem = {
   prompt?: string;
 };
 
-interface TerminalProps {
-  fsocietyMode?: boolean;
-  setFsocietyMode?: (active: boolean) => void;
-}
-
-export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProps) {
+export function Terminal() {
   const [history, setHistory] = useState<HistoryItem[]>([
     { type: "input", prompt: "guest@hadhi:~$", text: "whoami" },
     {
       type: "output",
-      text: "hadhi havath — full stack dev · ethical hacker · ai/ml researcher\nSpecializing in Python, Django, application security, and AI integrations.",
+      text: "Hadhi Havath — full stack developer specializing in Python & Django.\nBuilding performant web applications and secure integrations.",
     },
     { type: "input", prompt: "guest@hadhi:~$", text: "help" },
     {
       type: "output",
-      text: "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents\n  clear    - Clear terminal window\n  \nHint: Try listing directory files using 'ls'.",
+      text: "Available commands:\n  whoami   - Learn about Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key repositories\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents\n  clear    - Clear terminal window\n  \nHint: Try typing 'ls' to see directory files, then 'cat about.txt'.",
     },
   ]);
 
   const [input, setInput] = useState("");
-  const [isRoot, setIsRoot] = useState(false);
-  const [isWaitingForPassword, setIsWaitingForPassword] = useState(false);
-  const [isWaitingForFlag, setIsWaitingForFlag] = useState(false);
-  const [isElevating, setIsElevating] = useState(false);
-  const [progressMessage, setProgressMessage] = useState("");
-
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -45,168 +33,10 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
     }
   }, [history]);
 
-  const executeBypassAnimation = () => {
-    setIsElevating(true);
-    setInput("");
-    const steps = [
-      { text: "\n[!] SYSTEM BREACH PROTOCOL INITIALIZED...", delay: 200 },
-      { text: "[+] INJECTING SHELLCODE (Buffer Overflow exploit)...", delay: 800 },
-      { text: "[+] ELEVATING PRIVILEGES (SetUID validation bypass)...", delay: 1400 },
-      { text: "[+] SECURITY CONTEXT: root@hadhi:~#", delay: 2000 },
-      {
-        text: "\n[SUCCESS] ROOT SHELL UNLOCKED!\n\nType 'ls' to see unlocked administrative files.\nType 'cat resume.pdf' to view credentials.",
-        delay: 2600,
-      },
-    ];
-
-    steps.forEach((step, index) => {
-      setTimeout(() => {
-        setHistory((prev) => [...prev, { type: "output", text: step.text }]);
-        if (index === 3) {
-          setIsRoot(true);
-        }
-        if (index === steps.length - 1) {
-          setIsElevating(false);
-        }
-      }, step.delay);
-    });
-  };
-
-  const executeECorpHack = () => {
-    setProgressMessage("Initiating cyber security attack on E Corp servers...");
-    setInput("");
-    const steps = [
-      { text: "\n[!] TARGET: e-corp-backup.steel-mountain.com", delay: 300 },
-      { text: "[+] Scanning HVAC climate control network interface...", delay: 900 },
-      { text: "[+] Exploiting AirFlow HVAC firmware vulnerability (CVE-2015-3210)...", delay: 1800 },
-      { text: "[+] Establishing SSH shell on backup server cluster...", delay: 2700 },
-      { text: "[+] Executing fcore.py backup encryption sequence...", delay: 3600 },
-      { text: "[+] Overheating offline tape storage archives...", delay: 4500 },
-      {
-        text: "\n[SUCCESS] E Corp tape storage destroyed. Financial databases purged.\nOur democracy has been decrypted.\n\nType 'fsociety' to view our message to the world.",
-        delay: 5400,
-      },
-    ];
-
-    steps.forEach((step, index) => {
-      setTimeout(() => {
-        setHistory((prev) => [...prev, { type: "output", text: step.text }]);
-        if (index === steps.length - 1) {
-          setProgressMessage("");
-          if (setFsocietyMode) {
-            setFsocietyMode(true);
-          }
-        }
-      }, step.delay);
-    });
-  };
-
-
-  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const trimmedInput = input.trim();
-
-      // 1. Password input for Visitor Logs
-      if (isWaitingForPassword) {
-        const correctPassword = import.meta.env.VITE_ANALYTICS_PASSWORD || "mrhavath";
-        const newHistory = [
-          ...history,
-          { type: "input" as const, prompt: "Password: ", text: "********" },
-        ];
-
-        if (trimmedInput === correctPassword) {
-          setHistory([
-            ...newHistory,
-            {
-              type: "output",
-              text: "Authenticating...\nAccess granted.\n\nFetching visitor logs...",
-            },
-          ]);
-          setInput("");
-          setIsWaitingForPassword(false);
-
-          try {
-            const logs = await fetchVisitorLogs();
-            if (logs.length === 0) {
-              setHistory((prev) => [
-                ...prev,
-                {
-                  type: "output",
-                  text: "No visitor logs found. Connect Supabase to track global traffic.",
-                },
-              ]);
-            } else {
-              // Determine column widths dynamically to prevent truncation of devices/locations/IPs
-              let ipWidth = 10; // minimum header width for "IP Address" is 10
-              let locWidth = 8;  // minimum header width for "Location" is 8
-              let devWidth = 6;  // minimum header width for "Device" is 6
-
-              logs.forEach((log) => {
-                if (log.ip && log.ip.length > ipWidth) ipWidth = log.ip.length;
-                if (log.location && log.location.length > locWidth) locWidth = log.location.length;
-                if (log.device && log.device.length > devWidth) devWidth = log.device.length;
-              });
-
-              // Apply a reasonable upper cap to prevent table formatting blowup on very long text
-              ipWidth = Math.min(ipWidth, 40);
-              locWidth = Math.min(locWidth, 70);
-              devWidth = Math.min(devWidth, 30);
-
-              let logTable =
-                `${"IP Address".padEnd(ipWidth)} | ${"Location".padEnd(locWidth)} | ${"Device".padEnd(devWidth)} | Date & Time\n`;
-              logTable +=
-                `${"-".repeat(ipWidth + 1)}|${"-".repeat(locWidth + 2)}|${"-".repeat(devWidth + 2)}|---------------------\n`;
-
-              logs.forEach((log) => {
-                const date = new Date(log.created_at).toLocaleString();
-                const ip = (log.ip || "Unknown").substring(0, ipWidth).padEnd(ipWidth);
-                const loc = (log.location || "Unknown").substring(0, locWidth).padEnd(locWidth);
-                const dev = (log.device || "Unknown").substring(0, devWidth).padEnd(devWidth);
-                logTable += `${ip} | ${loc} | ${dev} | ${date}\n`;
-              });
-
-              setHistory((prev) => [...prev, { type: "output", text: logTable }]);
-            }
-          } catch (err) {
-            setHistory((prev) => [
-              ...prev,
-              { type: "output", text: "Error: Failed to fetch visitor database logs." },
-            ]);
-          }
-        } else {
-          setHistory([
-            ...newHistory,
-            { type: "output", text: "Access denied: Invalid credentials." },
-          ]);
-          setInput("");
-          setIsWaitingForPassword(false);
-        }
-        return;
-      }
-
-      // 2. Prompted flag input for Sudo Root
-      if (isWaitingForFlag) {
-        const newHistory = [
-          ...history,
-          { type: "input" as const, prompt: "Root Key: ", text: "********" },
-        ];
-        setInput("");
-        setIsWaitingForFlag(false);
-
-        if (trimmedInput === "system_breached_2026") {
-          setHistory(newHistory);
-          executeBypassAnimation();
-        } else {
-          setHistory([
-            ...newHistory,
-            { type: "output", text: "Access denied: Invalid privilege key payload." },
-          ]);
-        }
-        return;
-      }
-
-      // 3. Normal command processing
-      const currentPrompt = isRoot ? "root@hadhi:~#" : "guest@hadhi:~$";
+      const currentPrompt = "guest@hadhi:~$";
       const newHistory = [
         ...history,
         { type: "input" as const, prompt: currentPrompt, text: trimmedInput },
@@ -225,45 +55,12 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
       let output = "";
       switch (baseCmd) {
         case "help":
-          output = isRoot
-            ? "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat secret_dossier.txt)\n  fsociety - Read fsociety manifesto & show mask\n  ecorp    - Trigger simulated hack exploit\n  clear    - Clear terminal window"
-            : "Available commands:\n  whoami   - About Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key projects\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat flag.txt)\n  xor      - Decode XOR hex ciphers (e.g. xor <hex> <key>)\n  fsociety - Run fsociety.exe protocol\n  ecorp    - Execute exploit on E Corp servers\n  clear    - Clear terminal window\n  \nHint: Try listing files with 'ls'.";
+          output =
+            "Available commands:\n  whoami   - Learn about Hadhi Havath\n  skills   - List technical skills and stack\n  projects - List key repositories\n  contact  - Display contact channels\n  status   - Check current availability\n  ls       - List virtual directory files\n  cat      - Display file contents (e.g. cat about.txt)\n  clear    - Clear terminal window";
           break;
         case "whoami":
-          output = fsocietyMode
-            ? `Elliot Alderson — Cybersecurity Engineer @ Allsafe & fsociety founder.\n"I build it, then I hack it."`
-            : `Hadhi Havath — ${profile.tagline}\n"I build it, then I secure it."`;
+          output = `Hadhi Havath — ${profile.tagline}\n"Focusing on performant systems and secure services."`;
           break;
-        case "fsociety":
-          if (setFsocietyMode) {
-            setFsocietyMode(!fsocietyMode);
-          }
-          output =
-            "===================================================\n" +
-            "               fsociety.exe protocol               \n" +
-            "===================================================\n" +
-            "        .-----------------.\n" +
-            "       /   _   \\ /   _   \\\n" +
-            "      |   (o)   |   (o)   |\n" +
-            "      |    _ _ _|_ _ _    |\n" +
-            "      |   /   \\ _ /   \\   |\n" +
-            "       \\  \\___________/  /\n" +
-            "        \\               /\n" +
-            "         '-------------'-'\n" +
-            "===================================================\n" +
-            "\"Hello, friend. Hello, friend?\n" +
-            "That's lame. Maybe I should give you a name...\n" +
-            "But that's a slippery slope. You're only in my head.\n" +
-            "We have to remember that.\"\n\n" +
-            (fsocietyMode
-              ? "[+] fsociety encryption system disabled. Resetting security keys..."
-              : "[!] System override active. Visual interface decrypted.");
-          break;
-        case "ecorp":
-        case "hack":
-          setHistory(newHistory);
-          executeECorpHack();
-          return;
         case "skills":
           output = `Technical Stack:\n  ${stack.join(" · ")}`;
           break;
@@ -277,7 +74,7 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
             "Contact Channels:\n  - Email: mrhavath@gmail.com\n  - WhatsApp: +919207659510\n  - Instagram: instagram.com/mr.havath\n  - GitHub: github.com/hadhihavath";
           break;
         case "status":
-          output = `Status Check:\n  - [OK] Active & Online\n  - Availability: Freelance, Full-time & Security Audits\n  - Location: World-wide (Remote friendly)`;
+          output = `Status Check:\n  - [OK] Active & Online\n  - Availability: Open to work (Remote friendly)`;
           break;
         case "clear":
           setHistory([]);
@@ -285,98 +82,20 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
           return;
         case "ls":
         case "dir":
-          const filesList = isRoot ? ROOT_FILES : GUEST_FILES;
-          output = Object.keys(filesList).join("    ");
+          output = Object.keys(GUEST_FILES).join("    ");
           break;
         case "cat":
           if (!arg) {
             output = "usage: cat <filename>";
           } else {
-            const files = isRoot ? ROOT_FILES : GUEST_FILES;
-            const file = files[arg];
+            const file = GUEST_FILES[arg];
             if (file) {
               output = file.content;
-              if (isRoot && arg === "resume.pdf") {
-                window.open("https://github.com/hadhihavath", "_blank");
-              }
-            } else if (arg === "stack.txt") {
-              output = `Technical Stack:\n  ${stack.join(" · ")}`;
             } else {
               output = `cat: ${arg}: No such file or directory`;
             }
           }
           break;
-        case "xor":
-          if (!arg) {
-            output = "usage: xor <hex_ciphertext> <key>";
-          } else {
-            const xorParts = arg.split(/\s+/);
-            const hexCipher = xorParts[0];
-            const key = xorParts[1];
-
-            if (!hexCipher || !key) {
-              output = "usage: xor <hex_ciphertext> <key>";
-            } else {
-              try {
-                if (hexCipher.length % 2 !== 0) {
-                  throw new Error("Invalid hex length");
-                }
-                let result = "";
-                for (let i = 0; i < hexCipher.length; i += 2) {
-                  const hexByte = hexCipher.substring(i, i + 2);
-                  const byteVal = parseInt(hexByte, 16);
-                  if (isNaN(byteVal)) {
-                    throw new Error("Invalid byte value");
-                  }
-                  const keyChar = key.charCodeAt((i / 2) % key.length);
-                  result += String.fromCharCode(byteVal ^ keyChar);
-                }
-                output = `Decrypted: ${result}`;
-              } catch {
-                output = "xor: decryption error. Ensure input is a valid hex string.";
-              }
-            }
-          }
-          break;
-        case "sudo":
-          if (!arg) {
-            output = "usage: sudo [command]";
-          } else {
-            const subParts = arg.split(/\s+/);
-            const subCmd = subParts[0].toLowerCase();
-            const subArg = subParts.slice(1).join(" ");
-
-            if (subCmd === "root") {
-              if (subArg) {
-                if (subArg === "system_breached_2026") {
-                  setHistory(newHistory);
-                  executeBypassAnimation();
-                  return;
-                } else {
-                  output = "sudo: access denied: invalid root token payload";
-                }
-              } else {
-                setIsWaitingForFlag(true);
-                setHistory(newHistory);
-                setInput("");
-                return;
-              }
-            } else if (subCmd === "logs" || subCmd === "visitors") {
-              setIsWaitingForPassword(true);
-              setHistory(newHistory);
-              setInput("");
-              return;
-            } else {
-              output = `sudo: command not found: ${subCmd}`;
-            }
-          }
-          break;
-        case "visitors":
-        case "logs":
-          setIsWaitingForPassword(true);
-          setHistory(newHistory);
-          setInput("");
-          return;
         default:
           output = `command not found: ${trimmedInput}. Type 'help' for available commands.`;
           break;
@@ -394,22 +113,14 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
   return (
     <div
       onClick={handleContainerClick}
-      className={`glass rounded-lg p-4 font-mono text-sm md:text-base border shadow-lg cursor-text transition-all duration-500 ${
-        isRoot ? "border-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.25)]" : "border-border/50"
-      }`}
+      className="glass rounded-xl p-4 font-mono text-sm md:text-base border border-border/50 shadow-md cursor-text bg-black/40 text-foreground"
     >
       {/* Terminal Title Bar */}
-      <div className="mb-3 flex items-center gap-2 border-b border-border/30 pb-2 select-none">
-        <span
-          className={`size-3 rounded-full ${isRoot ? "bg-red-500 animate-pulse" : "bg-red-500/80"}`}
-        />
+      <div className="mb-3 flex items-center gap-2 border-b border-border/20 pb-2 select-none">
+        <span className="size-3 rounded-full bg-red-500/80" />
         <span className="size-3 rounded-full bg-yellow-500/80" />
         <span className="size-3 rounded-full bg-green-500/80" />
-        <span className="ml-2 text-xs text-muted-foreground">
-          {isRoot
-            ? "root@hadhi: ~ (administrative shell)"
-            : "guest@hadhi: ~ (interactive terminal)"}
-        </span>
+        <span className="ml-2 text-xs text-muted-foreground">guest@hadhi: ~ (shell)</span>
       </div>
 
       {/* Terminal Screen Content */}
@@ -418,17 +129,10 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
         className="max-h-72 overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-border"
       >
         {history.map((item, index) => (
-          <div
-            key={index}
-            className={`${
-              item.text.includes("IP Address")
-                ? "whitespace-pre overflow-x-auto scrollbar-none"
-                : "whitespace-pre-wrap"
-            } leading-relaxed`}
-          >
+          <div key={index} className="whitespace-pre-wrap leading-relaxed">
             {item.type === "input" ? (
               <div className="flex gap-2">
-                <span className="text-[color:var(--neon)] select-none">{item.prompt}</span>
+                <span className="text-emerald-400 select-none">{item.prompt}</span>
                 <span>{item.text}</span>
               </div>
             ) : (
@@ -438,44 +142,22 @@ export function Terminal({ fsocietyMode = false, setFsocietyMode }: TerminalProp
         ))}
 
         {/* Active Input Line */}
-        {!isElevating && !progressMessage && (
-          <div className="flex items-center gap-2">
-            <span className="text-[color:var(--neon)] select-none">
-              {isWaitingForPassword
-                ? "Password: "
-                : isWaitingForFlag
-                  ? "Root Key: "
-                  : isRoot
-                    ? "root@hadhi:~#"
-                    : "guest@hadhi:~$"}
-            </span>
-            <input
-              ref={inputRef}
-              type={isWaitingForPassword || isWaitingForFlag ? "password" : "text"}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none outline-none text-foreground caret-[color:var(--neon)] font-mono p-0 focus:ring-0"
-              autoFocus
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-            />
-          </div>
-        )}
-
-        {isElevating && (
-          <div className="text-[color:var(--neon-2)] animate-pulse font-mono text-xs select-none">
-            Executing exploit payload... Please hold.
-          </div>
-        )}
-
-        {progressMessage && (
-          <div className="text-[color:var(--neon-2)] animate-pulse font-mono text-xs select-none">
-            {progressMessage}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-emerald-400 select-none">guest@hadhi:~$</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 bg-transparent border-none outline-none text-foreground caret-emerald-400 font-mono p-0 focus:ring-0"
+            autoFocus
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+          />
+        </div>
       </div>
     </div>
   );

@@ -49,7 +49,8 @@ export const repos: Repo[] = [
   {
     name: "steel-mountain-hvac",
     language: "Python",
-    description: "HVAC climate control override exploit. Simulates backup tape archive degradation via ambient temperature alteration. Audit use only.",
+    description:
+      "HVAC climate control override exploit. Simulates backup tape archive degradation via ambient temperature alteration. Audit use only.",
     url: "https://github.com/hadhihavath/steel-mountain-hvac",
     stars: 13,
     forks: 5,
