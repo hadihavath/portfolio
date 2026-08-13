@@ -437,13 +437,13 @@ function Contact() {
                 whatsapp / +919207659510
               </a>
               <a
-                href="https://instagram.com/mr.havath"
+                href="https://instagram.com/hadhihavath"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl glass border-border/40 px-5 py-3 text-sm font-medium transition-all hover:scale-[1.01] hover:border-primary hover:shadow-sm"
               >
                 <Instagram className="size-4" />
-                instagram / @mr.havath
+                instagram / @hadhihavath
               </a>
             </div>
 
